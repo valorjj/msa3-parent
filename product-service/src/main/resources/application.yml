@@ -1,0 +1,18 @@
+server:
+  port: 0 # Random Port
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: product-service
+  config:
+    import: "optional:configserver:http://localhost:8888"
+  data:
+    mongodb:
+      authentication-database: admin
+      username: root
+      password: root
+      database: db_product
+      port: 27017
+      host: localhost

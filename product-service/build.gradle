@@ -1,0 +1,15 @@
+dependencies {
+	implementation('org.springframework.boot:spring-boot-starter-web')
+	testImplementation('org.testcontainers:mongodb')
+}
+
+jib {
+	from {
+		image = 'eclipse-temurin:17.0.4.1_1-jre'
+	}
+	
+	to {
+		image = "valorjj/msa2-product-service"
+		tags = ["latest"]
+	}
+}

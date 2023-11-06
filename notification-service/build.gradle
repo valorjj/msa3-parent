@@ -1,0 +1,17 @@
+dependencies {
+	implementation('org.springframework.kafka:spring-kafka')
+	implementation('org.springframework.boot:spring-boot-starter-web')
+	testImplementation('org.springframework.kafka:spring-kafka-test')
+}
+
+
+jib {
+	from {
+		image = 'eclipse-temurin:17.0.4.1_1-jre'
+	}
+	
+	to {
+		image = "valorjj/msa2-notification-service"
+		tags = ["latest"]
+	}
+}

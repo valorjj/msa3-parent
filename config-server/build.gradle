@@ -1,0 +1,19 @@
+dependencies {
+	implementation('org.springframework.cloud:spring-cloud-config-server')
+}
+
+jib {
+	from {
+		image = 'eclipse-temurin:17.0.4.1_1-jre'
+	}
+	
+	to {
+		image = "valorjj/msa2-config-server"
+		tags = ["latest"]
+	}
+	
+	container {
+		
+		ports = ["8888"]
+	}
+}

@@ -1,0 +1,28 @@
+spring:
+  application:
+    # Unique name of this application
+    name: notification-server
+  # Importing config from uri below
+  config:
+    import: optional:configserver:http://localhost:8888
+  ### Kafka Properties
+  kafka:
+    # Connect to local machine (docker container)
+    bootstrap-servers: localhost:9092
+    template:
+      default-topic: notificationTopic
+    # Consumer (not producer)
+    # 메세지를 전달받는 앱에는 consumer 관련 설정이 필요하다.
+    consumer:
+      # Serializer for key and value
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      # order-service 로 부터 받아오는 객체를 맵핑한다.
+      # 스프링부트의 @RequestBody 라고 생각하자.
+      properties:
+        spring.json.type.mapping: event:com.example.notificationservice.OrderPlacedEvent
+      group-id: notificationId
+### Server
+server:
+  # Random port number
+  port: 0

@@ -1,0 +1,45 @@
+spring:
+  ### Configuration Properties
+  # importing config data from uri
+  config:
+    import: optional:configserver:http://localhost:8888
+  application:
+    name: order-service
+  ### Datasource Properties
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/db_orders
+    username: root
+    password: root
+  ### JPA Properties
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+  ### Kafka Properties
+  # 참고 : https://stackoverflow.com/questions/76561842/spring-boot-app-cannot-connect-to-a-kafka-broker
+  kafka:
+    # Connect to local machine (docker container 의 포트와 일치하는 값을 적는다.)
+    bootstrap-servers: localhost:9092
+    template:
+      default-topic: notificationTopic
+    # order-service 에서는 메시지를 보내므로 producer 이다.
+    # 메시지를 받는 notification-service 에서는 consumer 설정을 추가한다.
+    producer:
+      # Serializer for key and value
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        # ${random-name}:${fully qualified class}
+        spring.json.type.mapping: event:com.example.com.example.orderservice.event.OrderPlacedEvent
+### Server Properties
+server:
+  port: 0
+
+
+
+

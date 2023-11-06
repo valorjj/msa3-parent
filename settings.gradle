@@ -1,0 +1,15 @@
+rootProject.name = 'msa-parent'
+
+// Modules
+include('core-module')
+include('mysql-module')
+include('mongo-module')
+
+// Services
+include('order-service')
+include('discovery-server')
+include('api-gateway')
+include('config-server')
+include('inventory-service')
+include('product-service')
+include('notification-service')

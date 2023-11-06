@@ -1,0 +1,19 @@
+dependencies {
+	implementation('org.springframework.cloud:spring-cloud-starter-netflix-eureka-server')
+	implementation('org.springframework.boot:spring-boot-starter-security')
+}
+
+jib {
+	from {
+		image = 'eclipse-temurin:17.0.4.1_1-jre'
+	}
+	
+	to {
+		image = "valorjj/msa2-discovery-server"
+		tags = ["latest"]
+	}
+	
+	container {
+		ports = ["8761"]
+	}
+}

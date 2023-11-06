@@ -1,0 +1,147 @@
+plugins {
+	id('java')
+	id('org.springframework.boot') version '3.1.5' apply false
+	id('io.spring.dependency-management') version '1.1.3'
+	id('com.google.osdetector') version "1.7.3"
+	id('com.google.cloud.tools.jib') version '3.4.0' apply false
+}
+
+allprojects {
+	group = ('org.example')
+	version = ('0.0.1-SNAPSHOT')
+	repositories {
+		mavenCentral()
+	}
+	java {
+		sourceCompatibility('17')
+		targetCompatibility('17')
+	}
+	ext {
+		set('springCloudVersion', "2022.0.4")
+	}
+}
+
+subprojects {
+	apply plugin: ('java')
+	apply plugin: ('java-library')
+	apply plugin: ('org.springframework.boot')
+	apply plugin: ('io.spring.dependency-management')
+	apply plugin: ('com.google.osdetector')
+	apply plugin: ('com.google.cloud.tools.jib')
+	
+	dependencies {
+		// -- Spring Boot Starter --
+		implementation('org.springframework.boot:spring-boot-starter')
+		
+		// -- !Spring Actuator (Testing as some errors occurred)--
+		// implementation('org.springframework.boot:spring-boot-starter-actuator')
+		
+		// -- Micrometer --
+		implementation('io.micrometer:micrometer-tracing-bridge-brave')
+		// -- Zipkin --
+		implementation('io.zipkin.reporter2:zipkin-reporter-brave')
+		// -- Circuit Breaker --
+		implementation('org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j')
+		// -- Lombok --
+		compileOnly('org.projectlombok:lombok')
+		annotationProcessor('org.projectlombok:lombok')
+		// -- Configuration Processor --
+		annotationProcessor('org.springframework.boot:spring-boot-configuration-processor')
+		// -- Test --
+		testImplementation(platform('org.junit:junit-bom:5.9.1'))
+		testImplementation('org.junit.jupiter:junit-jupiter')
+		testImplementation('org.springframework.boot:spring-boot-starter-test')
+		
+		// netty 관련 오류 해결, m1 mac os 에서 발생
+		if (osdetector.arch == "aarch_64") {
+			implementation('io.netty:netty-resolver-dns-native-macos:4.1.79.Final:osx-aarch_64')
+		}
+	}
+	
+	configurations {
+		compileOnly {
+			extendsFrom annotationProcessor
+		}
+	}
+	
+	test {
+		useJUnitPlatform()
+	}
+	
+	dependencyManagement {
+		imports {
+			mavenBom("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}")
+		}
+	}
+}
+
+project(':api-gateway') {
+	dependencies {
+		implementation(project(':core-module'))
+	}
+}
+
+project(':discovery-server') {
+
+}
+project(':config-server') {
+
+}
+project(':inventory-service') {
+
+}
+project(':order-service') {
+	dependencies {
+		implementation(project(':core-module'))
+		implementation(project(':mysql-module'))
+	}
+	
+}
+project(':notification-service') {
+	dependencies {
+		implementation(project(':core-module'))
+	}
+}
+project(':product-service') {
+	dependencies {
+		implementation(project(':core-module'))
+		implementation(project(':mongo-module'))
+	}
+}
+
+project(':core-module') {
+	// 실행 가능한 bootJar 파일을 생성하기 위해, main 클래스가 필요하다.
+	// 하지만 단순히 라이브러리만 담고 있는 모듈은 main 클래스가 필요 없으므로 비활성화 시켜준다.
+	bootJar {
+		enabled = false
+	}
+	jar {
+		enabled = true
+		preserveFileTimestamps = false
+		reproducibleFileOrder = true
+	}
+}
+project(':mysql-module') {
+	bootJar {
+		enabled = false
+	}
+	jar {
+		enabled = true
+		preserveFileTimestamps = false
+		reproducibleFileOrder = true
+	}
+}
+project(':mongo-module') {
+	bootJar {
+		enabled = false
+	}
+	jar {
+		enabled = true
+		preserveFileTimestamps = false
+		reproducibleFileOrder = true
+	}
+}
+
+//jar {
+//	enabled = true
+//}

@@ -1,0 +1,25 @@
+server:
+  port: 8888
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: git@github.com:valorjj/msa2-app-config.git
+          ignore-local-ssh-settings: true
+          clone-on-start: true
+          strict-host-key-checking: true
+          private-key: |
+            -----BEGIN EC PRIVATE KEY-----
+            Proc-Type: 4,ENCRYPTED
+            DEK-Info: AES-128-CBC,20A5419422F6155FA07B4A4DF4070B5D
+
+            yh30NKSG0aXQ6hUj/fIGtnqx/1whWO7aUkvlGJvyxL6iMxDu07nifaTflg/8y4Dw
+            gIrpMxVmUGM8vhjKVh9u7GtyKUHSrDYP6ybxfnqqsfcLmoqUUZk6rUPmgrO/wZwv
+            ryQT2lfCiCczN3YvQYnnUJGFM+Aaw59oONhxRyaRTmQ=
+            -----END EC PRIVATE KEY-----
+          timeout: 4
+          passphrase: spring
+          default-label: main

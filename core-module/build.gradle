@@ -1,0 +1,34 @@
+/*
+api 는 compile 의 대체
+api 는 하위 의존 접근을 허용O
+implement 는 하위 의존 접근 허용X
+* */
+dependencies {
+	// -- Eureka Client --
+	api('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
+	// -- Validation --
+	api('org.springframework.boot:spring-boot-starter-validation')
+	// -- Cloud Config --
+	api('org.springframework.cloud:spring-cloud-starter-config')
+	// -- CircuitBreaker Resilience4j --
+	api('org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j')
+	// -- Swagger UI(OpenDoc) --
+	api('org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0')
+	// -- Actuator --
+	api('org.springframework.boot:spring-boot-starter-actuator')
+	// -- Kafka --
+	api('org.springframework.kafka:spring-kafka')
+}
+
+jib {
+	from {
+		image = 'eclipse-temurin:17.0.4.1_1-jre'
+	}
+	
+	to {
+		image = "valorjj/msa2-core-module"
+		tags = ["latest"]
+	}
+}
+
+
