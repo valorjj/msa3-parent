@@ -66,3 +66,5 @@ K
 discovery-server/.gitignore,6/3/63ee1c8d6d94372b4227afa850815ddbaa1ba9d3
 M
 config-server/settings.gradle,8/2/82f797b596f4f7e7e64e6c7b4b1086173e5f98b8
+9
+	README.md,8/e/8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d
