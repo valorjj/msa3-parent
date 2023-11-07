@@ -1,8 +1,8 @@
 version: '3.8'
 services:
 
-  ### Postgres Configuration
-  # Change database for order-service
+  ### Postgres Configuration Docker Compose Configuration
+  # Alter database for order-service
   # from mysql to postgresql
   postgres-order:
     container_name: postgres-order
@@ -21,10 +21,26 @@ services:
     command: -p 5431
     restart: unless-stopped
 
-  ### MySQL
+  # Alter database for inventory-service
+  # from mysql to postgresql
+  postgres-inventory:
+    container_name: postgres-inventory
+    image: postgres
+    environment:
+      - POSTGRES_DB=inventory-service
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - PGDATA=/data/postgres
+    volumes:
+      - ./postgres-inventory:/data/postgres
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+  ### MySQL Docker Compose Configuration
   mysql:
     image: mysql:8.2.0
-    container_name: mysql_container
+    container_name: mysql
     restart: always
     expose:
       - 3306
@@ -38,25 +54,25 @@ services:
       - ./mysql/env/.env
     volumes:
       # {실제로 연결될 폴더 경로}:{docker 안의 폴더 경로}
-      - ./data/mysql:/var/lib/mysql
+      - ./mysql-db/mysql:/var/lib/mysql
       # 미리 작성한 sql 을 실행한다.
       # 컨테이너 생성 시, 알파벳 순서대로 실행된다.
       - ./mysql/initdb.d:/docker-entrypoint-initdb.d
-      # mysql 설정 파일을 담는다.
+      # 미리 작성한 mysql 설정 파일을 컨테이너에 추가한다.
       - ./mysql/conf.d:/etc/mysql/conf.d
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
 
-  ### MongoDB
+  ### MongoDB Docker Compose Configuration
   mongodb:
     image: mongo:5.0.22
-    container_name: mongodb_container
-    restart: always
+    container_name: mongodb
+    restart: unless-stopped
     ports:
       - "27017:27017"
     expose:
-      - 27017
+      - "27017"
     volumes:
       - ./mongodb:/data/db
     environment:
@@ -64,25 +80,154 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=root
       - MONGO_INITDB_DATABASE=db_product
 
-  ### KeyCloak
+
+  ### KeyCloak Docker Compose Configuration with MySQL
+  keycloak-mysql:
+    image: mysql:8.2.0
+    container_name: mysql-keycloak
+    volumes:
+      - ./mysql_keycloak_data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=keycloak
+      - MYSQL_USER=keycloak
+      - MYSQL_PASSWORD=password
+
+  ### KeyCloak Docker Compose Configuration
   keycloak:
     image: quay.io/keycloak/keycloak:22.0.5
-    container_name: keycloak_container
-    command: [ "start-dev" ]
+    container_name: keycloak
+    #
+    command: [ "start-dev", "--import-realm" ]
     ports:
       - "8080:8080"
     environment:
+      - DB_VENDOR=MYSQL
+      - DB_ADDR=mysql
+      - DB_DATABASE=keycloak
+      - DB_USER=keycloak
+      - DB_PASSWORD=password
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
+    volumes:
+      - ./realms/:/opt/keycloak/data/import/
+    depends_on:
+      - keycloak-mysql
 
-  ### Zipkin
+  ### Eureka Server Docker Compose Configuration
+  discovery-server:
+    image: valorjj/msa2-discovery-server:latest
+    container_name: discovery-server
+    pull_policy: always
+    ports:
+      - "8761:8761"
+    # http://localhost:9411 에서
+    # http://zipkin:9411 로 변경 (zipkin 은 컨테이너 이름)
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - zipkin
+
+  ### Config Server Docker Compose Configuration
+  config-server:
+    image: valorjj/msa2-config-server:latest
+    container_name: config-server
+    pull_policy: always
+    ports:
+      - "8888:8888"
+
+  ### Api Gateway Service Docker Compose Configuration
+  api-gateway:
+    image: valorjj/msa2-api-gateway:latest
+    container_name: api-gateway
+    pull_policy: always
+    ports:
+      - "8181:8080"
+    expose:
+      - "8181"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=trace
+    depends_on:
+      - zipkin
+      - discovery-server
+      - keycloak
+      - config-server
+
+  ### Product Service Docker Compose Configuration
+  product-service:
+    image: valorjj/msa2-product-service:latest
+    container_name: product-service
+    pull_policy: always
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - zipkin
+      - discovery-server
+      - config-server
+      - api-gateway
+      - mongodb
+
+
+  ### Order Service Docker Compose Configuration
+  # MySQL 에서 PostgreSQL 로 db 변경
+  order-service:
+    image: valorjj/msa2-order-service:latest
+    container_name: order-service
+    pull_policy: always
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-order:5431/order-service
+    depends_on:
+      - postgres-order
+      - broker
+      - zipkin
+      - discovery-server
+      - api-gateway
+      - config-server
+
+
+  ### Inventory Service Docker Compose Configuration
+  # MySQL 에서 PostgreSQL 로 db 변경
+  inventory-service:
+    image: valorjj/msa2-inventory-service:latest
+    container_name: inventory-service
+    pull_policy: always
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-inventory:5431/inventory-service
+    depends_on:
+      - postgres-order
+      - broker
+      - zipkin
+      - discovery-server
+      - api-gateway
+      - config-server
+
+
+  ### Notification Service Docker Compose Configuration
+  notification-service:
+    image: valorjj/msa2-notification-service:latest
+    container_name: notification-service
+    pull_policy: always
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - zipkin
+      - broker
+      - discovery-server
+      - api-gateway
+      - config-server
+
+
+  ### Zipkin Docker Compose Configuration
   zipkin:
     image: openzipkin/zipkin
     container_name: zipkin
     ports:
       - "9411:9411"
 
-  ### Kafka
+  ### Kafka Docker Compose Configuration
   broker:
     image: confluentinc/cp-kafka:7.5.1
     hostname: broker
@@ -248,3 +393,5 @@ services:
       KAFKA_REST_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
 
   ### Kafka END
+
+

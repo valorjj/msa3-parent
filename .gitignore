@@ -31,6 +31,7 @@ bin/
 ### DB ###
 /mongodb/
 /data/
+/mysql-db/
 /postgres-order/
 
 # Created by https://www.toptal.com/developers/gitignore/api/java,intellij+all

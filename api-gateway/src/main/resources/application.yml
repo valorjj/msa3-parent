@@ -6,11 +6,11 @@ spring:
   security:
     oauth2:
       resourceserver:
-        # http://localhost:8181/realms/spring-msa-relm/.well-known/openid-configuration
+        # http://localhost:8181/realms/spring-msa-realm/.well-known/openid-configuration
         jwt:
           # issuer-uri 활성화 시,
           # OAuth2 자동설정 클래스가 나머지 엔드포인트에 요청을 보낸다.
-          issuer-uri: http://localhost:8181/realms/spring-msa-relm
+          issuer-uri: http://localhost:8181/realms/spring-msa-realm
   cloud:
     gateway:
       routes:
@@ -52,4 +52,4 @@ spring:
     web-application-type: reactive
 
 server:
-  port: 8099
+  port: 8181

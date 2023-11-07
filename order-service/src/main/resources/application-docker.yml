@@ -1,0 +1,14 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres:5431/order-service
+    driver-class-name: org.postgresql.Driver
+    username: root
+    password: root
+  kafka:
+    # docker-compose.yml 파일 중 broker 를 살펴보면 아래 설정이 존재한다.
+    # KAFKA_LISTENERS: 'PLAINTEXT://broker:29092,CONTROLLER://broker:29093,PLAINTEXT_HOST://0.0.0.0:9092'
+    # 위 설정에 따라, 도커 배포 시 broker:29092 를 정한다.
+    bootstrap-servers: broker:29092
