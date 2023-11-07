@@ -52,6 +52,9 @@ subprojects {
 		testImplementation('org.junit.jupiter:junit-jupiter')
 		testImplementation('org.springframework.boot:spring-boot-starter-test')
 		
+		// -- Prometheus --
+		runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+		
 		// netty 관련 오류 해결, m1 mac os 에서 발생
 		if (osdetector.arch == "aarch_64") {
 			implementation('io.netty:netty-resolver-dns-native-macos:4.1.79.Final:osx-aarch_64')

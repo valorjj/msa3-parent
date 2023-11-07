@@ -22,9 +22,4 @@ jib {
 		image = "valorjj/msa2-discovery-server"
 		tags = ["latest"]
 	}
-	
-	container {
-		ports = ['8761']
-	}
-	
 }

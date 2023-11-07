@@ -53,3 +53,8 @@ spring:
 
 server:
   port: 8181
+management:
+  endpoints:
+    web:
+      exposure:
+        include:

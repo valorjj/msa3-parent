@@ -24,8 +24,4 @@ jib {
 		image = "valorjj/msa2-api-gateway"
 		tags = ["latest"]
 	}
-	
-	container {
-		ports = ["8181"]
-	}
 }
