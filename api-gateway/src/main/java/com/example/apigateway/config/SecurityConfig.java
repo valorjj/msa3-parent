@@ -21,7 +21,8 @@ public class SecurityConfig {
                     .pathMatchers("/eureka/**").permitAll()
                     .anyExchange().authenticated()
             )
-            .oauth2ResourceServer(o -> o.jwt(j -> j.jwkSetUri("http://localhost:8181/realms/spring-msa-realm/protocol/openid-connect/certs")))
+            // .oauth2ResourceServer(o -> o.jwt(j -> j.jwkSetUri("http://localhost:8181/realms/spring-msa-realm/protocol/openid-connect/certs")))
+            .oauth2ResourceServer(o -> o.jwt(j -> j.jwkSetUri("http://keycloak:8181/realms/spring-msa-realm/protocol/openid-connect/certs")))
         ;
         return httpSecurity.build();
     }

@@ -72,6 +72,7 @@ public class OrderServiceImplV1 implements OrderServiceV1 {
                 kafkaTemplate.send("notificationTopic", new OrderPlacedEvent(savedOrder.getOrderNumber()));
                 return "Order has been placed successfully";
             }
+
             // 재고가 없는 경우, 예외를 발생시킨다.
             else {
                 throw new IllegalStateException("재고가 부족합니다.");
