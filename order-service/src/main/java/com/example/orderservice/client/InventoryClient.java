@@ -11,6 +11,7 @@ import java.util.List;
 @HttpExchange(url = "http://inventory-service/api/v2/inventory")
 @LoadBalancerClient
 public interface InventoryClient {
+
     @GetExchange
     List<InventoryResponseDTO.InventoryInStockResponse> isInStock(@RequestParam List<String> skuCodes);
 

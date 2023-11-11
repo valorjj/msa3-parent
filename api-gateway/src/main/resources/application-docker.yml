@@ -1,10 +1,61 @@
 server:
   port: 8080
 spring:
+  application:
+    name: api-gateway
   config:
     import: optional:configserver:http://config-server:8888
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://keycloak:8181/realms/spring-msa-realm
+          issuer-uri: http://keycloak:8080/realms/spring-msa-realm
+
+
+### Utilizing SpringCloudGatewayRouting.java ###
+#  cloud:
+#    gateway:
+#      routes:
+#        ## 1. Product Service Route
+#        - id: product-service
+#          uri: lb://product-service
+#          predicates:
+#            - Path=/api/v1/product
+#
+#        ## 2. Order Service Route
+#        - id: order-service
+#          uri: lb://order-service
+#          predicates:
+#            - Path=/api/v1/order
+#
+#        ## 3. Inventory Service Route
+#        - id: inventory-service
+#          uri: lb://inventory-service
+#          predicates:
+#            - Path=/api/v2/inventory
+#
+#        ## 4-1. Discovery Server Route
+#        - id: discovery-server
+#          uri: http://eureka:password@localhost:8761/eureka
+#          predicates:
+#            - Path=/eureka/web
+#          filters:
+#            - SetPath=/
+#        ## 4-2. Discovery Server Static Resource Route
+#        - id: discovery-server-static
+#          uri: http://eureka:password@localhost:8761/eureka
+#          predicates:
+#            - Path=/eureka/**
+
+  # https://www.baeldung.com/spring-boot-application-context-exception
+  # web-application-type: reactive 를 통해
+  # Web MVC 의존성을 거부하도록 설정할 수 있다.
+  # 하지만, Web MVC 의존성이 없는데 대체 뭐가 문제인지 모르겠다.
+  main:
+    web-application-type: reactive
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus

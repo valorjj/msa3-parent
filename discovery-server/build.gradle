@@ -5,7 +5,7 @@ dependencies {
 
 jib {
 	from {
-		image = 'eclipse-temurin:17.0.4.1_1-jre'
+		image = 'amazoncorretto:17'
 		platforms {
 			platform {
 				architecture = 'amd64'
@@ -22,4 +22,8 @@ jib {
 		image = "valorjj/msa2-discovery-server"
 		tags = ["latest"]
 	}
+}
+
+jar {
+	enabled = false
 }

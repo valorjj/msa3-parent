@@ -1,6 +1,7 @@
 package com.example.apigateway.config;
 
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -10,6 +11,9 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @EnableWebFluxSecurity
 @Configuration
 public class SecurityConfig {
+
+    @Value("${security.jwks_uri}")
+    private String JWKS_URL;
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity httpSecurity) {
@@ -21,8 +25,7 @@ public class SecurityConfig {
                     .pathMatchers("/eureka/**").permitAll()
                     .anyExchange().authenticated()
             )
-            // .oauth2ResourceServer(o -> o.jwt(j -> j.jwkSetUri("http://localhost:8181/realms/spring-msa-realm/protocol/openid-connect/certs")))
-            .oauth2ResourceServer(o -> o.jwt(j -> j.jwkSetUri("http://keycloak:8181/realms/spring-msa-realm/protocol/openid-connect/certs")))
+            .oauth2ResourceServer(i -> i.jwt(j -> j.jwkSetUri(JWKS_URL)))
         ;
         return httpSecurity.build();
     }

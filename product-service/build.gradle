@@ -5,11 +5,25 @@ dependencies {
 
 jib {
 	from {
-		image = 'eclipse-temurin:17.0.4.1_1-jre'
+		image = 'amazoncorretto:17'
+		platforms {
+			platform {
+				architecture = 'amd64'
+				os = 'linux'
+			}
+			platform {
+				architecture = 'arm64'
+				os = 'linux'
+			}
+		}
 	}
 	
 	to {
 		image = "valorjj/msa2-product-service"
 		tags = ["latest"]
 	}
+}
+
+jar {
+	enabled = false
 }

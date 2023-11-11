@@ -22,9 +22,6 @@ public class InventoryServiceImplV2 implements InventoryServiceV2 {
     @Override
     @Transactional(readOnly = true)
     public List<InventoryResponseDTO.InventoryInStockRes> isInStock(List<String> skuCodes) {
-        log.info("Wait started");
-        Thread.sleep(40000);
-        log.info("Wait ended");
         return repository.findBySkuCodeIn(skuCodes).stream()
             .map(InventoryServiceImplV2::apply)
             .toList();

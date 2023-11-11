@@ -1,5 +1,15 @@
 server:
   port: 8761
 spring:
+  application:
+    name: discovery-server
   zipkin:
     base-url: http://zipkin:9411
+eureka:
+  instance:
+    hostname: discovery-server
+  client:
+    fetch-registry: false
+    register-with-eureka: false
+  username: ${EUREKA_USERNAME:eureka}
+  password: ${EUREKA_PASSWORD:password}

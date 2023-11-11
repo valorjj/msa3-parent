@@ -2,12 +2,13 @@ dependencies {
 	implementation(project(':core-module'))
 	implementation(project(':mysql-module'))
 	implementation('org.springframework.boot:spring-boot-starter-web')
+	runtimeOnly('org.postgresql:postgresql')
 }
 
 
 jib {
 	from {
-		image = 'eclipse-temurin:17.0.4.1_1-jre'
+		image = 'amazoncorretto:17'
 		platforms {
 			platform {
 				architecture = 'amd64'
@@ -24,4 +25,8 @@ jib {
 		image = "valorjj/msa2-inventory-service"
 		tags = ["latest"]
 	}
+}
+
+jar {
+	enabled = false
 }

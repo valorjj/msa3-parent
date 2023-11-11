@@ -31,7 +31,7 @@ public class WebClientConfig {
     public WebClient inventoryWebClient() {
         return WebClient.builder()
             .filter(lbFunction)
-            .baseUrl("http://localhost:8082")
+            .baseUrl("http://inventory-service")
             .build();
     }
 

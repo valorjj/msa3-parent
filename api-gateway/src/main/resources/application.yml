@@ -6,44 +6,46 @@ spring:
   security:
     oauth2:
       resourceserver:
-        # http://localhost:8181/realms/spring-msa-realm/.well-known/openid-configuration
         jwt:
           # issuer-uri 활성화 시,
           # OAuth2 자동설정 클래스가 나머지 엔드포인트에 요청을 보낸다.
-          issuer-uri: http://localhost:8181/realms/spring-msa-realm
-  cloud:
-    gateway:
-      routes:
-        ## 1. Product Service Route
-        - id: product-service
-          uri: lb://product-service
-          predicates:
-            - Path=/api/v1/product
+          issuer-uri: "http://localhost:8080/realms/spring-msa-realm"
+          jwk-set-uri: "http://localhost:8080/realms/spring-msa-realm/protocol/openid-connect/certs"
 
-        ## 2. Order Service Route
-        - id: order-service
-          uri: lb://order-service
-          predicates:
-            - Path=/api/v1/order
+  #  cloud:
+#    gateway:
+#      routes:
+#        ## 1. Product Service Route
+#        - id: product-service
+#          uri: lb://product-service
+#          predicates:
+#            - Path=/api/v1/product
+#
+#        ## 2. Order Service Route
+#        - id: order-service
+#          uri: lb://order-service
+#          predicates:
+#            - Path=/api/v1/order
+#
+#        ## 3. Inventorty Service Route
+#        - id: inventory-service
+#          uri: lb://inventory-service
+#          predicates:
+#            - Path=/api/v2/inventory
+#
+#        ## 4-1. Discovery Server Route
+#        - id: discovery-server
+#          uri: http://eureka:password@localhost:8761/eureka
+#          predicates:
+#            - Path=/eureka/web
+#          filters:
+#            - SetPath=/
+#        ## 4-2. Discovery Server Static Resource Route
+#        - id: discovery-server-static
+#          uri: http://eureka:password@localhost:8761/eureka
+#          predicates:
+#            - Path=/eureka/**
 
-        ## 3. Inventorty Service Route
-        - id: inventory-service
-          uri: lb://inventory-service
-          predicates:
-            - Path=/api/v2/inventory
-
-        ## 4-1. Discovery Server Route
-        - id: discovery-server
-          uri: http://eureka:password@localhost:8761/eureka
-          predicates:
-            - Path=/eureka/web
-          filters:
-            - SetPath=/
-        ## 4-2. Discovery Server Static Resource Route
-        - id: discovery-server-static
-          uri: http://eureka:password@localhost:8761/eureka
-          predicates:
-            - Path=/eureka/**
   # https://www.baeldung.com/spring-boot-application-context-exception
   # web-application-type: reactive 를 통해
   # Web MVC 의존성을 거부하도록 설정할 수 있다.
@@ -53,8 +55,6 @@ spring:
 
 server:
   port: 8181
-management:
-  endpoints:
-    web:
-      exposure:
-        include:
+
+security:
+  jwks_uri: "http://localhost:8080/realms/spring-msa-realm/protocol/openid-connect/certs"

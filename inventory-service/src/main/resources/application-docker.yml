@@ -8,3 +8,4 @@ spring:
     url: jdbc://postgresql://postgres:5432/inventory-service
     username: root
     password: root
+    driver-class-name: org.postgresql.Driver

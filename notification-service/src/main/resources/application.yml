@@ -21,6 +21,7 @@ spring:
       # 스프링부트의 @RequestBody 라고 생각하자.
       properties:
         spring.json.type.mapping: event:com.example.notificationservice.OrderPlacedEvent
+      # consumer 는 지정한 id 에 속한다.
       group-id: notificationId
 ### Server
 server:
