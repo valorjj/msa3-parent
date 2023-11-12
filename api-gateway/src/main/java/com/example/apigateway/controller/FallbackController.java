@@ -2,13 +2,14 @@ package com.example.apigateway.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 @RestController
-public class Test {
+public class FallbackController {
 
-    @GetMapping("/test")
-    public String test(){
-        return "test";
+    @GetMapping("/fallback")
+    public Mono<String> fallback(){
+        return Mono.just("fallback");
     }
 
 }

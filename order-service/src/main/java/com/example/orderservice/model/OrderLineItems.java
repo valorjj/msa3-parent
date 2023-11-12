@@ -25,4 +25,11 @@ public class OrderLineItems extends BaseTime {
     @Column(name = "quantity")
     private Integer quantity;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Order order;
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
 }

@@ -6,8 +6,6 @@ import lombok.*;
 @Entity
 @Table(name = "tbl_inventory")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
 @Getter
 public class Inventory {
 
@@ -20,5 +18,16 @@ public class Inventory {
 
     @Column(name = "quantity")
     private Integer quantity;
+
+    @Builder
+    public Inventory(Long id, String skuCode, Integer quantity) {
+        this.id = id;
+        this.skuCode = skuCode;
+        this.quantity = quantity;
+    }
+
+    public void decreaseQuantity(Integer number) {
+        this.quantity -= number;
+    }
 
 }

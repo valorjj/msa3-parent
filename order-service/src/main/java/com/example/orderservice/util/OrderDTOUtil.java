@@ -7,6 +7,8 @@ import com.example.orderservice.model.Order;
 import com.example.orderservice.model.OrderLineItems;
 
 import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 
 public class OrderDTOUtil {
 
@@ -16,6 +18,7 @@ public class OrderDTOUtil {
     public static Order saveLineItems(List<OrderLineItems> orderLineItems) {
         return Order.builder()
             .orderLineItemsList(orderLineItems)
+            .orderNumber(UUID.randomUUID().toString())
             .build();
     }
 
