@@ -86,7 +86,7 @@ public class OrderServiceImplV1 implements OrderServiceV1 {
                 log.info("[*] 주문번호 -> {} 인 주문을 저장합니다.", savedOrder.getOrderNumber());
 
                 // Kafka 를 통해 메시지를 전달한 뒤 로그를 남긴다.
-                CompletableFuture<SendResult<String, OrderPlacedEvent>> future = kafkaTemplate.send("notificationTopic", new OrderPlacedEvent(savedOrder.getOrderNumber()));
+                CompletableFuture<SendResult<String, OrderPlacedEvent>> future = kafkaTemplate.send("notificationTopic", new OrderPlacedEvent(savedOrder.getOrderNumber(), "valorjj@gmail.com"));
                 future.whenComplete((result, ex) -> {
                     if (ex == null) {
                         log.info("result -> {}", result);
